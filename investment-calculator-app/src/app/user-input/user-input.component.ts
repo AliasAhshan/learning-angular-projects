@@ -1,58 +1,32 @@
 import { Component, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { type Results } from '../app.model';
 
-
-interface Results {
-  year: number
-  interest: number
-  valueEndOfYear: number
-  annualInvestment: number
-  totalInterest: number
-  totalAmountInvested: number
-}
 
 @Component({
   selector: 'app-user-input',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './user-input.component.html',
   styleUrl: './user-input.component.css'
 })
 
 export class UserInputComponent {
-  calculate = output<Results[]>()
-  initialInvestment = 0
-  annualInvestment = 0
-  expectedReturn = 0
-  duration = 0
+  calculate = output<Results>()
 
-  calculateInvestmentResults(): Results[] {
-  const annualData: Results[] = [];
-  let investmentValue = this.initialInvestment;
-
-  for (let i = 0; i < this.duration; i++) {
-    const year = i + 1;
-    const interestEarnedInYear = investmentValue * (this.expectedReturn / 100);
-    investmentValue += interestEarnedInYear + this.annualInvestment;
-    const totalInterest =
-      investmentValue - this.annualInvestment * year - this.initialInvestment;
-
-    annualData.push({
-      year: year,
-      interest: interestEarnedInYear,
-      valueEndOfYear: investmentValue,
-      annualInvestment: this.annualInvestment,
-      totalInterest: totalInterest,
-      totalAmountInvested: this.initialInvestment + this.annualInvestment * year,
-    });
-  }
-
-  return annualData;
-}
+  userInitialInvestment = "0"
+  userAnnualInvestment = "0"
+  userExpectedReturn = "5"
+  userDuration = "10"
   
 
-  onCalculate() {
-    const results = this.calculateInvestmentResults()
-    this.calculate.emit(results)
+  onSubmit() {
+    this.calculate.emit({
+      initialInvestment: +this.userInitialInvestment,
+      annualInvestment: +this.userAnnualInvestment,
+      expectedReturn: +this.userExpectedReturn,
+      duration: +this.userDuration
+  })
   }
 }
 
